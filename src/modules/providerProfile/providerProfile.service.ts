@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma"
+import { AppError } from "../../utils/AppError";
 import { createProviderRequest } from "./providerProfile.types";
 
 const getAllProviders = async () => {
@@ -7,7 +8,7 @@ const getAllProviders = async () => {
 }
 
 const getSingleProvider = async (providerId : string) => {
-    const result = await prisma.providerProfile.findUnique({
+    const result = await prisma.providerProfile.findUniqueOrThrow({
         where: {
             id: providerId
         },
@@ -21,13 +22,17 @@ const getSingleProvider = async (providerId : string) => {
 
 const createProvider = async (data: createProviderRequest, userId: string) => {
     return prisma.$transaction(async (tx) => {
-        const existingProvider = await tx.providerProfile.findFirst({
+        const existingProvider = await tx.providerProfile.findUniqueOrThrow({
             where: { userId }
         });
 
         if (existingProvider) {
-            throw new Error("You are already a provider");
-        }
+            throw new AppError(
+                "You are already a provider",
+                400,
+                "BAD_REQUEST"
+            );
+        };
 
         await tx.user.update({
             where: {

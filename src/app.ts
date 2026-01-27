@@ -5,8 +5,10 @@ import { authRouter } from "./modules/auth/auth.router";
 import { mealRouter } from "./modules/meal/meal.router";
 import { categoryRouter } from "./modules/category/category.route";
 import { providerProfileRouter } from "./modules/providerProfile/providerProfile.route";
+import { errorHandler } from "./middlewares/errorHandler";
 
 const app : Application = express();
+
 app.use(express.json());
 
 // Auth Routes
@@ -25,5 +27,7 @@ app.use('/api/categories', categoryRouter)
 app.get("/", (req : Request, res : Response) => {
     res.status(200).send("Hello there!");
 })
+
+app.use(errorHandler);
 
 export default app;

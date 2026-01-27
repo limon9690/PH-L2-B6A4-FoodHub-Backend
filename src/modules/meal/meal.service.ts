@@ -7,7 +7,7 @@ const getAllMeals = async () => {
 }
 
 const getSingleMeal = async (mealId : string) => {
-    const result = await prisma.meal.findFirst({
+    const result = await prisma.meal.findUniqueOrThrow({
         where: {
             id : mealId,
         }
