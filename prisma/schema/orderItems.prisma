@@ -1,0 +1,12 @@
+model OrderItem {
+    id Int @id @default(autoincrement())
+    unitPriceSnapshot  Int
+    mealNameSnapshot      String
+    quantity Int
+
+    meal Meal? @relation(fields: [mealId], references: [id])
+    mealId Int?
+
+    order Order @relation(fields: [orderId], references: [id])
+    orderId Int
+}

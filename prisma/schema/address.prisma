@@ -1,0 +1,9 @@
+model Address {
+    id        Int   @id @default(autoincrement())
+    address   String
+    phone     String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

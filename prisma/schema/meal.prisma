@@ -1,0 +1,18 @@
+model Meal {
+    id Int @id @default(autoincrement())
+    name String 
+    details String
+    image_url String?
+    price Int 
+    isAvailable Boolean @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    reviews Review[]
+    orderItems OrderItem[]
+
+    category Category @relation(fields: [categoryId], references: [id])
+    categoryId Int
+
+    provider ProviderProfile @relation(fields: [providerId], references: [id])
+    providerId Int
+}
