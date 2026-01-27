@@ -13,6 +13,18 @@ const getAllProviders = async (req : Request, res : Response) => {
     }
 }
 
+const getSingleProvider = async (req : Request, res : Response) => {
+    try {
+        const providerId = req.params.providerId;
+        const result = await providerProfileService.getSingleProvider(providerId as string);
+        return res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({
+            "error" : error
+        })
+    }
+}
+
 const createProvider = async (req : Request, res : Response) => {
     try {
         const userId = req.user?.id;
@@ -29,5 +41,6 @@ const createProvider = async (req : Request, res : Response) => {
 
 export const providerProfileController = {
     getAllProviders,
-    createProvider
+    createProvider,
+    getSingleProvider
 }

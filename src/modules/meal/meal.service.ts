@@ -6,6 +6,16 @@ const getAllMeals = async () => {
     return meals;
 }
 
+const getSingleMeal = async (mealId : string) => {
+    const result = await prisma.meal.findFirst({
+        where: {
+            id : mealId,
+        }
+    })
+
+    return result;
+}
+
 const createMeal = async (data : CreateMealRequest, userId : string) => {
     const providerProfile = await prisma.providerProfile.findFirst({
         where: {
@@ -26,7 +36,63 @@ const createMeal = async (data : CreateMealRequest, userId : string) => {
     return result;
 }
 
+const updateMeal = async (data : Partial<CreateMealRequest>, mealId : string, userId : string) => {
+    const providerProfile = await prisma.providerProfile.findFirstOrThrow({
+        where: {
+            userId : userId
+        }
+    });
+
+    const providerId = providerProfile.id;
+
+    const existingMeal = await prisma.meal.findFirstOrThrow({
+        where: {
+            id: mealId,
+            providerId: providerId
+        }
+    });
+
+    const result = await prisma.meal.update({
+        where : {
+            id : mealId
+        },
+        data : {
+            ...data
+        }
+    });
+
+    return result;
+}
+
+const removeMeal = async (mealId : string, userId : string) => {
+    const provider = await prisma.providerProfile.findFirstOrThrow({
+        where: {
+            userId: userId
+        }
+    });
+
+    const providerId = provider.id;
+
+    const existingMeal = await prisma.meal.findFirstOrThrow({
+        where: {
+            id : mealId,
+            providerId: providerId,
+        }
+    });
+
+    const result = await prisma.meal.delete({
+        where: {
+            id: mealId,
+        }
+    })
+
+    return result;
+}
+
 export const mealService = {
     getAllMeals,
     createMeal,
+    getSingleMeal,
+    updateMeal,
+    removeMeal
 }

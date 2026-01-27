@@ -10,6 +10,18 @@ const getAllMeals = async (req : Request, res : Response) => {
     }
 }
 
+const getSingleMeal = async (req : Request, res : Response) => {
+    try {
+        const mealId = req.params.mealId;
+        const result = await mealService.getSingleMeal(mealId as string);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({
+            "error" : "error meal"
+        })
+    }
+}
+
 const createMeal = async (req : Request, res : Response) => {
     try {
         const userId = req.user?.id;
@@ -20,7 +32,37 @@ const createMeal = async (req : Request, res : Response) => {
     }
 }
 
+const updateMeal = async (req : Request, res : Response) => {
+    try {
+        const userId = req.user?.id;
+        const mealId = req.params.mealId;
+        const result = await mealService.updateMeal(req.body, mealId as string, userId as string);
+        return res.status(201).json(result);
+    } catch (error) {
+        res.status(400).json({
+            "error" : "error updating meal"
+        })
+    }
+}
+
+const removeMeal = async (req : Request, res : Response) => {
+    try {
+        const userId = req.user?.id;
+        const mealId = req.params.mealId;
+        const result = await mealService.removeMeal(mealId as string, userId as string);
+        return res.status(201).json(result);
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            "error" : "error deleting meal"
+        })
+    }
+}
+
 export const mealController = {
     getAllMeals,
-    createMeal
+    createMeal,
+    getSingleMeal,
+    updateMeal,
+    removeMeal
 }
