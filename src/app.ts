@@ -6,6 +6,7 @@ import { mealRouter } from "./modules/meal/meal.router";
 import { categoryRouter } from "./modules/category/category.route";
 import { providerProfileRouter } from "./modules/providerProfile/providerProfile.route";
 import { errorHandler } from "./middlewares/errorHandler";
+import { addressRouter } from "./modules/address/address.route";
 
 const app : Application = express();
 
@@ -23,6 +24,9 @@ app.use('/api/meals', mealRouter);
 
 // Category Routes
 app.use('/api/categories', categoryRouter)
+
+// Address Routes
+app.use('/api/addresses', addressRouter);
 
 app.get("/", (req : Request, res : Response) => {
     res.status(200).send("Hello there!");
