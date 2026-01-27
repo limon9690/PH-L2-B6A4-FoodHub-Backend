@@ -1,12 +1,12 @@
 model Review {
-    id        Int      @id @default(autoincrement())
+    id   String    @id @default(uuid())
     rating    Int
     comment   String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     meal   Meal @relation(fields: [mealId], references: [id])
-    mealId Int
+    mealId String
 
     user   User   @relation(fields: [userId], references: [id])
     userId String

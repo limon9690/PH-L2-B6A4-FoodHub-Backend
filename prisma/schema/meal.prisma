@@ -1,5 +1,5 @@
 model Meal {
-    id Int @id @default(autoincrement())
+    id   String    @id @default(uuid())
     name String 
     details String
     image_url String?
@@ -11,8 +11,8 @@ model Meal {
     orderItems OrderItem[]
 
     category Category @relation(fields: [categoryId], references: [id])
-    categoryId Int
+    categoryId String
 
     provider ProviderProfile @relation(fields: [providerId], references: [id])
-    providerId Int
+    providerId String
 }

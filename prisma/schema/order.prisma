@@ -1,5 +1,5 @@
 model Order {
-    id Int @id @default(autoincrement())
+    id   String    @id @default(uuid())
     status OrderStatus @default(PLACED)
     totalAmount Int 
     createdAt DateTime @default(now())
@@ -10,7 +10,7 @@ model Order {
     userId String
 
     provider ProviderProfile @relation(fields: [providerId], references: [id])
-    providerId Int
+    providerId String
 }
 
 
