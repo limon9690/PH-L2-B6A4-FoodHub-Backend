@@ -113,7 +113,24 @@ const getProviderOrderDetails = async (userId : string, orderId : string) => {
 }
 
 const updateOrderStatus = async (data : UpdateCustomerOrderRequest, userId : string, orderId : string) => {
-    
+    const order = await prisma.order.findUniqueOrThrow({
+        where: {
+            id : orderId
+        }
+    });
+
+    if (order.status === "PREPARING") {
+        throw new AppError("Order is already being prepared. You can't cancel now", 400, "BAD_REQUEST");
+    };
+
+    if (order.status === "READY") {
+        throw new AppError("Order is ready. You can't cancel now", 400, "BAD_REQUEST");
+    };
+
+    if (order.status === "CANCELLED") {
+        throw new AppError("Order is already cancelled", 400, "BAD_REQUEST");
+    };
+
     const result = await prisma.order.update({
         where: {
             id : orderId,
