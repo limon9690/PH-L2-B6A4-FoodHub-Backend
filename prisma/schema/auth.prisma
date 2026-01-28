@@ -13,7 +13,8 @@ model User {
   reviews       Review[]
   orders        Order[]
 
-  role Role @default(USER)
+  role   Role   @default(USER)
+  status Status @default(ACTIVE)
 
   @@unique([email])
   @@map("user")
@@ -71,4 +72,9 @@ enum Role {
   USER
   PROVIDER
   ADMIN
+}
+
+enum Status {
+  SUSPEND
+  ACTIVE
 }

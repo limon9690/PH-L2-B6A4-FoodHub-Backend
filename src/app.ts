@@ -9,6 +9,7 @@ import { errorHandler } from "./middlewares/errorHandler";
 import { addressRouter } from "./modules/address/address.route";
 import { orderRouter } from "./modules/order/order.route";
 import { providerRouter } from "./modules/provider/provider.route";
+import { adminRouter } from "./modules/admin/admin.route";
 
 const app : Application = express();
 
@@ -35,6 +36,9 @@ app.use('/api/orders', orderRouter)
 
 // Provider Routes
 app.use('/api/provider', providerRouter)
+
+// Admin Routes
+app.use('/api/admin', adminRouter)
 
 app.get("/", (req : Request, res : Response) => {
     res.status(200).send("Hello there!");
