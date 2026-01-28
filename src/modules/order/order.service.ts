@@ -58,64 +58,64 @@ const createOrder = async (data: CreateOrderRequest, userId: string) => {
     return result;
 }
 
-// const getAllUserOrders = async (userId : string) => {
-//     const result = await prisma.order.findMany({
-//         where: {
-//             userId: userId
-//         }
-//     })
+const getAllUserOrders = async (userId : string) => {
+    const result = await prisma.order.findMany({
+        where: {
+            userId: userId
+        }
+    })
 
-//     return result;
-// }
+    return result;
+}
 
-// const getAllProviderOrders = async (userId : string) => {
-//     const provider = await prisma.providerProfile.findUniqueOrThrow({
-//         where: {
-//             userId: userId
-//         }
-//     });
+const getAllProviderOrders = async (userId : string) => {
+    const provider = await prisma.providerProfile.findUniqueOrThrow({
+        where: {
+            userId: userId
+        }
+    });
 
-//     const result = await prisma.order.findMany({
-//         where: {
-//             providerId: provider.id
-//         }
-//     })
+    const result = await prisma.order.findMany({
+        where: {
+            providerId: provider.id
+        }
+    })
 
-//     return result;
-// }
+    return result;
+}
 
-// const getUserOrderDetails = async (userId : string, orderId : string) => {
-//     const result = await prisma.order.findUniqueOrThrow({
-//         where: {
-//             userId: userId,
-//             id : orderId
-//         }
-//     })
+const getUserOrderDetails = async (userId : string, orderId : string) => {
+    const result = await prisma.order.findUniqueOrThrow({
+        where: {
+            userId: userId,
+            id : orderId
+        }
+    })
 
-//     return result;
-// }
+    return result;
+}
 
-// const getProviderOrderDetails = async (userId : string, orderId : string) => {
-//     const provider = await prisma.providerProfile.findUniqueOrThrow({
-//         where: {
-//             userId: userId
-//         }
-//     });
+const getProviderOrderDetails = async (userId : string, orderId : string) => {
+    const provider = await prisma.providerProfile.findUniqueOrThrow({
+        where: {
+            userId: userId
+        }
+    });
 
-//     const result = await prisma.order.findMany({
-//         where: {
-//             providerId: provider.id,
-//             id : orderId
-//         }
-//     })
+    const result = await prisma.order.findMany({
+        where: {
+            providerId: provider.id,
+            id : orderId
+        }
+    })
 
-//     return result;
-// }
+    return result;
+}
 
 export const orderService = {
     createOrder,
-    // getAllUserOrders,
-    // getAllProviderOrders,
-    // getUserOrderDetails,
-    // getProviderOrderDetails
+    getAllUserOrders,
+    getAllProviderOrders,
+    getUserOrderDetails,
+    getProviderOrderDetails
 }
