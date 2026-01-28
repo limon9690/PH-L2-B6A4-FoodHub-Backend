@@ -1,5 +1,4 @@
-import { prisma } from "../../lib/prisma"
-import { CreateMealRequest } from "./meal.type";
+import { prisma } from "../../lib/prisma";
 
 const getAllMeals = async () => {
     const meals = await prisma.meal.findMany();
@@ -16,83 +15,9 @@ const getSingleMeal = async (mealId : string) => {
     return result;
 }
 
-const createMeal = async (data : CreateMealRequest, userId : string) => {
-    const providerProfile = await prisma.providerProfile.findFirst({
-        where: {
-            userId
-        }
-    });
 
-    const providerProfileId = providerProfile?.id;
-    const providerId = providerProfileId as string;
-    
-    const result = await prisma.meal.create({
-        data : {
-            ...data,
-            providerId 
-        }
-    })
-
-    return result;
-}
-
-const updateMeal = async (data : Partial<CreateMealRequest>, mealId : string, userId : string) => {
-    const providerProfile = await prisma.providerProfile.findFirstOrThrow({
-        where: {
-            userId : userId
-        }
-    });
-
-    const providerId = providerProfile.id;
-
-    const existingMeal = await prisma.meal.findFirstOrThrow({
-        where: {
-            id: mealId,
-            providerId: providerId
-        }
-    });
-
-    const result = await prisma.meal.update({
-        where : {
-            id : mealId
-        },
-        data : {
-            ...data
-        }
-    });
-
-    return result;
-}
-
-const removeMeal = async (mealId : string, userId : string) => {
-    const provider = await prisma.providerProfile.findFirstOrThrow({
-        where: {
-            userId: userId
-        }
-    });
-
-    const providerId = provider.id;
-
-    const existingMeal = await prisma.meal.findFirstOrThrow({
-        where: {
-            id : mealId,
-            providerId: providerId,
-        }
-    });
-
-    const result = await prisma.meal.delete({
-        where: {
-            id: mealId,
-        }
-    })
-
-    return result;
-}
 
 export const mealService = {
     getAllMeals,
-    createMeal,
-    getSingleMeal,
-    updateMeal,
-    removeMeal
+    getSingleMeal
 }

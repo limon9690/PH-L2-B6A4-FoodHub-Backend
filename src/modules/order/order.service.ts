@@ -1,6 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/AppError";
-import { CreateOrderRequest } from "./order.types";
+import { CreateOrderRequest, UpdateCustomerOrderRequest } from "./order.types";
 
 const createOrder = async (data: CreateOrderRequest, userId: string) => {
     let providerCheckId: string = "";
@@ -112,10 +112,26 @@ const getProviderOrderDetails = async (userId : string, orderId : string) => {
     return result;
 }
 
+const updateOrderStatus = async (data : UpdateCustomerOrderRequest, userId : string, orderId : string) => {
+    
+    const result = await prisma.order.update({
+        where: {
+            id : orderId,
+            userId : userId
+        },
+        data : {
+            ...data
+        }
+    })
+    
+    return result;
+}
+
 export const orderService = {
     createOrder,
     getAllUserOrders,
     getAllProviderOrders,
     getUserOrderDetails,
-    getProviderOrderDetails
+    getProviderOrderDetails,
+    updateOrderStatus
 }

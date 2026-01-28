@@ -6,3 +6,7 @@ type MealItem = {
 export type CreateOrderRequest = {
     meals : MealItem[];
 }
+
+export type UpdateCustomerOrderRequest = {
+  status: "CANCELLED";
+};

@@ -2,12 +2,13 @@ import { toNodeHandler } from "better-auth/node";
 import express, { Application, Request, Response } from "express";
 import { auth } from "./lib/auth";
 import { authRouter } from "./modules/auth/auth.router";
-import { mealRouter } from "./modules/meal/meal.router";
+import { mealRouter } from "./modules/meal/meal.route";
 import { categoryRouter } from "./modules/category/category.route";
 import { providerProfileRouter } from "./modules/providerProfile/providerProfile.route";
 import { errorHandler } from "./middlewares/errorHandler";
 import { addressRouter } from "./modules/address/address.route";
 import { orderRouter } from "./modules/order/order.route";
+import { providerRouter } from "./modules/provider/provider.route";
 
 const app : Application = express();
 
@@ -31,6 +32,9 @@ app.use('/api/addresses', addressRouter);
 
 // Order Routes
 app.use('/api/orders', orderRouter)
+
+// Provider Routes
+app.use('/api/provider', providerRouter)
 
 app.get("/", (req : Request, res : Response) => {
     res.status(200).send("Hello there!");
