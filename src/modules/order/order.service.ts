@@ -1,0 +1,121 @@
+import { prisma } from "../../lib/prisma";
+import { AppError } from "../../utils/AppError";
+import { CreateOrderRequest } from "./order.types";
+
+const createOrder = async (data: CreateOrderRequest, userId: string) => {
+    let providerCheckId: string = "";
+     const items: Array<{ meal: any; quantity: number }> = [];
+    let totalAmount: number = 0
+
+    for (const meal of data.meals) {
+        const dbMeal = await prisma.meal.findUniqueOrThrow({
+            where: {
+                id: meal.mealId
+            }
+        });
+
+        if (providerCheckId === "") {
+            providerCheckId = dbMeal.providerId;
+        }
+
+        if (dbMeal.providerId !== providerCheckId) {
+            throw new AppError("Each order items can belong to only one provider", 400, "MULTIPLE_PROVIDER_ERROR");
+        }
+
+        items.push({ meal: dbMeal, quantity: meal.quantity });
+        totalAmount = totalAmount + (dbMeal.price * meal.quantity);
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+        const order = await tx.order.create({
+            data: {
+                userId: userId,
+                providerId: providerCheckId,
+                totalAmount: totalAmount
+            }
+        });
+
+        await tx.orderItem.createMany({
+            data: items.map((item) => ({
+                orderId: order.id,
+                mealId: item.meal.id,
+                mealNameSnapshot: item.meal.name,
+                unitPriceSnapshot: item.meal.price,
+                quantity: item.quantity
+            })),
+        });
+
+        return tx.order.findUnique({
+            where: {
+                id: order.id
+            },
+            include: {
+                orderItems: true
+            }
+        })
+    })
+
+    return result;
+}
+
+// const getAllUserOrders = async (userId : string) => {
+//     const result = await prisma.order.findMany({
+//         where: {
+//             userId: userId
+//         }
+//     })
+
+//     return result;
+// }
+
+// const getAllProviderOrders = async (userId : string) => {
+//     const provider = await prisma.providerProfile.findUniqueOrThrow({
+//         where: {
+//             userId: userId
+//         }
+//     });
+
+//     const result = await prisma.order.findMany({
+//         where: {
+//             providerId: provider.id
+//         }
+//     })
+
+//     return result;
+// }
+
+// const getUserOrderDetails = async (userId : string, orderId : string) => {
+//     const result = await prisma.order.findUniqueOrThrow({
+//         where: {
+//             userId: userId,
+//             id : orderId
+//         }
+//     })
+
+//     return result;
+// }
+
+// const getProviderOrderDetails = async (userId : string, orderId : string) => {
+//     const provider = await prisma.providerProfile.findUniqueOrThrow({
+//         where: {
+//             userId: userId
+//         }
+//     });
+
+//     const result = await prisma.order.findMany({
+//         where: {
+//             providerId: provider.id,
+//             id : orderId
+//         }
+//     })
+
+//     return result;
+// }
+
+export const orderService = {
+    createOrder,
+    // getAllUserOrders,
+    // getAllProviderOrders,
+    // getUserOrderDetails,
+    // getProviderOrderDetails
+}
