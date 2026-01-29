@@ -79,6 +79,18 @@ const getSingleMeal = async (mealId : string) => {
     const result = await prisma.meal.findUniqueOrThrow({
         where: {
             id : mealId,
+        },
+        include: {
+            provider : {
+                select: {
+                    shopName: true
+                }
+            },
+            reviews: {
+                include: {
+                    user: true,
+                }
+            }
         }
     })
 

@@ -10,8 +10,16 @@ import { addressRouter } from "./modules/address/address.route";
 import { orderRouter } from "./modules/order/order.route";
 import { providerRouter } from "./modules/provider/provider.route";
 import { adminRouter } from "./modules/admin/admin.route";
+import cors from "cors";
 
 const app : Application = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+)
 
 app.use(express.json());
 

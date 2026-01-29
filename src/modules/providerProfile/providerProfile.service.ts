@@ -3,7 +3,15 @@ import { AppError } from "../../utils/AppError";
 import { createProviderRequest } from "./providerProfile.types";
 
 const getAllProviders = async () => {
-    const result = await prisma.providerProfile.findMany();
+    const result = await prisma.providerProfile.findMany({
+        include: {
+            user: {
+                select: {
+                    address: true
+                }
+            }
+        }
+    });
     return result;
 }
 
@@ -13,7 +21,12 @@ const getSingleProvider = async (providerId: string) => {
             id: providerId
         },
         include: {
-            meals: true
+            meals: true,
+            user: {
+                include: {
+                    address: true
+                }
+            }
         }
     });
 
