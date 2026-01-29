@@ -20,9 +20,9 @@ const getAllOrders = async (req : Request, res : Response, next : NextFunction) 
         let result;
 
         if (role === "PROVIDER") {
-            result = orderService.getAllProviderOrders(userId as string)
+            result = await orderService.getAllProviderOrders(userId as string)
         } else if (role === "USER") {
-            result = orderService.getAllUserOrders(userId as string);
+            result = await orderService.getAllUserOrders(userId as string);
         }
 
         res.status(200).json(result);
@@ -40,9 +40,9 @@ const getOrderDetails = async (req : Request, res : Response, next : NextFunctio
         let result;
 
         if (role === "PROVIDER") {
-            result = orderService.getProviderOrderDetails(userId as string, orderId as string);
+            result = await orderService.getProviderOrderDetails(userId as string, orderId as string);
         } else if (role === "USER") {
-            result = orderService.getUserOrderDetails(userId as string, orderId as string);
+            result = await orderService.getUserOrderDetails(userId as string, orderId as string);
         }
 
         res.status(200).json(result);
@@ -56,7 +56,7 @@ const updateOrderStatus = async (req : Request, res : Response, next : NextFunct
         const userId = req.user?.id;
         const orderId = req.params.orderId;
 
-        const result = await orderService.updateOrderStatus(req.body, userId as string, orderId as string);
+        const result = await orderService.updateOrderStatus(userId as string, orderId as string);
         res.status(200).json(result);
     } catch (error) {
         next(error);

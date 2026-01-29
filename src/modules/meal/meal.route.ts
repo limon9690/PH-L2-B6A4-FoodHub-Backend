@@ -10,6 +10,6 @@ router.get('/:mealId', mealController.getSingleMeal)
 
 router.get('/:mealId/reviews', reviewController.getMealReviews);
 
-router.post('/mealId/reviews', authMiddleware("USER"), reviewController.createReview)
+router.post('/:mealId/reviews', authMiddleware("USER"), reviewController.createReview)
 
 export const mealRouter = router;

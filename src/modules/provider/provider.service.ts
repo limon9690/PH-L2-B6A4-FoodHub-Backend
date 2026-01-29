@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { AppError } from "../../utils/AppError";
 import { CreateMealRequest, UpdateOrderRequest } from "./provider.type";
 
 const createMeal = async (data : CreateMealRequest, userId : string) => {
@@ -80,6 +81,16 @@ const updateOrderStatus = async (data : UpdateOrderRequest, userId : string, ord
             userId,
         }
     });
+
+    const order = await prisma.order.findUniqueOrThrow({
+        where: {
+            id : orderId
+        }
+    });
+
+    if (order.status === "CANCELLED") {
+        throw new AppError("Order is already cancelled.", 400, "BAD_REQUEST");
+    }
 
     const providerId = provider.id;
 

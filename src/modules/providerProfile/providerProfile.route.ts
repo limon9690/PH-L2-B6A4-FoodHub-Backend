@@ -6,7 +6,7 @@ const router : Router = Router();
 
 router.get('/', providerProfileController.getAllProviders);
 
-router.post('/', authMiddleware("USER"), providerProfileController.createProvider);
+router.post('/', authMiddleware("PROVIDER"), providerProfileController.createProvider);
 
 router.get('/:providerId', providerProfileController.getSingleProvider)
 

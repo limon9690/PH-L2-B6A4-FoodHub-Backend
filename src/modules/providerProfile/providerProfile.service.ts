@@ -7,7 +7,7 @@ const getAllProviders = async () => {
     return result;
 }
 
-const getSingleProvider = async (providerId : string) => {
+const getSingleProvider = async (providerId: string) => {
     const result = await prisma.providerProfile.findUniqueOrThrow({
         where: {
             id: providerId
@@ -21,37 +21,15 @@ const getSingleProvider = async (providerId : string) => {
 }
 
 const createProvider = async (data: createProviderRequest, userId: string) => {
-    return prisma.$transaction(async (tx) => {
-        const existingProvider = await tx.providerProfile.findUniqueOrThrow({
-            where: { userId }
-        });
+    const result = await prisma.providerProfile.create({
+        data: {
+            ...data,
+            userId
+        }
+    });
 
-        if (existingProvider) {
-            throw new AppError(
-                "You are already a provider",
-                400,
-                "BAD_REQUEST"
-            );
-        };
+    return result;
 
-        await tx.user.update({
-            where: {
-                id: userId,
-            },
-            data: {
-                role: "PROVIDER"
-            }
-        })
-
-        const result = await tx.providerProfile.create({
-            data: {
-                ...data,
-                userId
-            }
-        });
-
-        return result;
-    })  
 }
 
 export const providerProfileService = {

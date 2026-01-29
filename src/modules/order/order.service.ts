@@ -89,6 +89,9 @@ const getUserOrderDetails = async (userId : string, orderId : string) => {
         where: {
             userId: userId,
             id : orderId
+        },
+        include: {
+            orderItems : true
         }
     })
 
@@ -102,17 +105,20 @@ const getProviderOrderDetails = async (userId : string, orderId : string) => {
         }
     });
 
-    const result = await prisma.order.findMany({
+    const result = await prisma.order.findUniqueOrThrow({
         where: {
             providerId: provider.id,
             id : orderId
+        },
+        include: {
+            orderItems : true
         }
     })
 
     return result;
 }
 
-const updateOrderStatus = async (data : UpdateCustomerOrderRequest, userId : string, orderId : string) => {
+const updateOrderStatus = async (userId : string, orderId : string) => {
     const order = await prisma.order.findUniqueOrThrow({
         where: {
             id : orderId
@@ -137,7 +143,7 @@ const updateOrderStatus = async (data : UpdateCustomerOrderRequest, userId : str
             userId : userId
         },
         data : {
-            ...data
+            status : "CANCELLED"
         }
     })
     

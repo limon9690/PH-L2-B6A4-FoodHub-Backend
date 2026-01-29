@@ -10,6 +10,6 @@ router.get('/', authMiddleware("USER", "PROVIDER"), orderController.getAllOrders
 
 router.get('/:orderId', authMiddleware("USER", "PROVIDER"), orderController.getOrderDetails);
 
-router.put('/:orderId', authMiddleware("USER"), orderController.updateOrderStatus);
+router.put('/cancel/:orderId', authMiddleware("USER"), orderController.updateOrderStatus);
 
 export const orderRouter = router;
