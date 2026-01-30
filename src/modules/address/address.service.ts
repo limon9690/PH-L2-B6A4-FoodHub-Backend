@@ -1,16 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { CreateAddressRequest } from "./address.types";
 
-const createAddress = async (data : CreateAddressRequest, userId : string) => {
-    const result = await prisma.address.create({
-        data : {
-            ...data,
-            userId
-        }
-    });
-
-    return result;
-}
 
 const getUserAddress = async (userId : string) => {
     const result = await prisma.address.findUniqueOrThrow({
@@ -22,19 +12,17 @@ const getUserAddress = async (userId : string) => {
     return result;
 }
 
-const updateAddress = async (data : Partial<CreateAddressRequest>, userId : string) => {
-    await prisma.user.findUniqueOrThrow({
-        where: {
-            id : userId
-        }
-    });
-
-    const result = await prisma.address.update({
-        data : {
-            ...data
-        },
+const upsertAddress = async (data : CreateAddressRequest, userId : string) => {
+    const result = await prisma.address.upsert({
         where: {
             userId: userId
+        },
+        update: {
+            ...data
+        },
+        create: {
+            ...data,
+            userId
         }
     });
 
@@ -43,6 +31,5 @@ const updateAddress = async (data : Partial<CreateAddressRequest>, userId : stri
 
 export const addressService = {
     getUserAddress,
-    createAddress,
-    updateAddress
+    upsertAddress
 }

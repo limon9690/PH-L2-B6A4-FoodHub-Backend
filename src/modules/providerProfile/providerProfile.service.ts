@@ -34,19 +34,50 @@ const getSingleProvider = async (providerId: string) => {
 }
 
 const createProvider = async (data: createProviderRequest, userId: string) => {
-    const result = await prisma.providerProfile.create({
-        data: {
-            ...data,
-            userId
-        }
-    });
+    const result = await prisma.$transaction(async (tx) => {
+        const updatedUser = await tx.user.update({
+            where: {
+                id :userId
+            },
+            data: {
+                role: "PROVIDER"
+            }
+        });
+        
+        const providerProfile = await tx.providerProfile.create({
+            data: {
+                ...data,
+                userId
+            },
+            include: {
+                user: {
+                    select: {
+                        role: true
+                    }
+                }
+            }
+        });
+
+        return providerProfile;
+    })
 
     return result;
 
 }
 
+const getSingleProviderByUserId = async (userId : string) => {
+    const result = await prisma.providerProfile.findFirst({
+        where: {
+            userId
+        }
+    })
+
+    return result;
+}
+
 export const providerProfileService = {
     getAllProviders,
     createProvider,
-    getSingleProvider
+    getSingleProvider,
+    getSingleProviderByUserId
 }

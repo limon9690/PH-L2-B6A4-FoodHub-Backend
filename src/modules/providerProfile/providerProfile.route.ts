@@ -6,8 +6,10 @@ const router : Router = Router();
 
 router.get('/', providerProfileController.getAllProviders);
 
-router.post('/', authMiddleware("PROVIDER"), providerProfileController.createProvider);
+router.get('/me', authMiddleware("PROVIDER"),providerProfileController.getSingleProviderByUserId);
 
-router.get('/:providerId', providerProfileController.getSingleProvider)
+router.post('/', authMiddleware("USER"), providerProfileController.createProvider);
+
+router.get('/:providerId', providerProfileController.getSingleProvider);
 
 export const providerProfileRouter = router;
