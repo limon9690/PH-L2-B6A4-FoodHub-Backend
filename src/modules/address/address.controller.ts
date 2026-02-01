@@ -11,6 +11,16 @@ const getUserAddress = async (req : Request, res : Response, next : NextFunction
     }
 }
 
+const getUserAddressById = async (req : Request, res : Response, next : NextFunction) => {
+    try {
+        const userId = req.params?.id;
+        const result = await addressService.getUserAddress(userId as string);
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+}
+
 
 const upsertAddress = async (req : Request, res : Response, next : NextFunction) => {
     try {
@@ -26,5 +36,6 @@ const upsertAddress = async (req : Request, res : Response, next : NextFunction)
 
 export const addressController = {
     getUserAddress,
+    getUserAddressById,
     upsertAddress
 }

@@ -6,9 +6,9 @@ const router : Router = Router();
 
 router.post('/', authMiddleware("USER"), orderController.createOrder);
 
-router.get('/', authMiddleware("USER", "PROVIDER"), orderController.getAllOrders);
+router.get('/', authMiddleware("USER", "PROVIDER", "ADMIN"), orderController.getAllOrders);
 
-router.get('/:orderId', authMiddleware("USER", "PROVIDER"), orderController.getOrderDetails);
+router.get('/:orderId', authMiddleware("USER", "PROVIDER", "ADMIN"), orderController.getOrderDetails);
 
 router.put('/cancel/:orderId', authMiddleware("USER"), orderController.updateOrderStatus);
 

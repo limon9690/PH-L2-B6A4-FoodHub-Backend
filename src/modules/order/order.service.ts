@@ -58,6 +58,11 @@ const createOrder = async (data: CreateOrderRequest, userId: string) => {
     return result;
 }
 
+const getAllOrders = async () => {
+    const result = await prisma.order.findMany({})
+    return result;
+}
+
 const getAllUserOrders = async (userId : string) => {
     const result = await prisma.order.findMany({
         where: {
@@ -88,6 +93,19 @@ const getUserOrderDetails = async (userId : string, orderId : string) => {
     const result = await prisma.order.findUniqueOrThrow({
         where: {
             userId: userId,
+            id : orderId
+        },
+        include: {
+            orderItems : true
+        }
+    })
+
+    return result;
+}
+
+const getOrderDetailsForAdmin = async (orderId : string) => {
+    const result = await prisma.order.findUniqueOrThrow({
+        where: {
             id : orderId
         },
         include: {
@@ -156,5 +174,7 @@ export const orderService = {
     getAllProviderOrders,
     getUserOrderDetails,
     getProviderOrderDetails,
-    updateOrderStatus
+    updateOrderStatus,
+    getAllOrders,
+    getOrderDetailsForAdmin
 }

@@ -23,6 +23,8 @@ const getAllOrders = async (req : Request, res : Response, next : NextFunction) 
             result = await orderService.getAllProviderOrders(userId as string)
         } else if (role === "USER") {
             result = await orderService.getAllUserOrders(userId as string);
+        } else {
+            result = await orderService.getAllOrders();
         }
 
         res.status(200).json(result);
@@ -43,6 +45,8 @@ const getOrderDetails = async (req : Request, res : Response, next : NextFunctio
             result = await orderService.getProviderOrderDetails(userId as string, orderId as string);
         } else if (role === "USER") {
             result = await orderService.getUserOrderDetails(userId as string, orderId as string);
+        } else {
+            result = await orderService.getOrderDetailsForAdmin(orderId as string);
         }
 
         res.status(200).json(result);
@@ -63,9 +67,10 @@ const updateOrderStatus = async (req : Request, res : Response, next : NextFunct
     }
 }
 
+
 export const orderController = {
     createOrder,
     getAllOrders,
     getOrderDetails,
-    updateOrderStatus
+    updateOrderStatus,
 }
