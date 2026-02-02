@@ -13,18 +13,58 @@ import { adminRouter } from "./modules/admin/admin.route";
 import cors from "cors";
 
 const app : Application = express();
+//app.set("trust proxy", 1);
+app.use(express.json());
+
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       const allowed = process.env.FRONT_END_URL?.replace(/\/$/, "");
+//       if (!origin || origin.replace(/\/$/, "") === allowed) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   }),
+// );
+
+const allowedOrigins = [
+  process.env.APP_URL || "http://localhost:4000",
+  process.env.FRONT_END_URL, // Production frontend URL
+].filter(Boolean); // Remove undefined values
+
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-)
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
 
-app.use(express.json());
+      // Check if origin is in allowedOrigins or matches Vercel preview pattern
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/foodhub.*\.vercel\.app$/.test(origin) ||
+        /^https:\/\/.*\.vercel\.app$/.test(origin); // Any Vercel deployment
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
+  }),
+);
 
 // Auth Routes
-app.use('/api/auth/', authRouter);
+app.use('/api/auth', authRouter);
+
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 
 // Provider-Profile Routes

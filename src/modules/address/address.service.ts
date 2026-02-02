@@ -3,7 +3,7 @@ import { CreateAddressRequest } from "./address.types";
 
 
 const getUserAddress = async (userId : string) => {
-    const result = await prisma.address.findUniqueOrThrow({
+    const result = await prisma.address.findUnique({
         where: {
             userId
         }
